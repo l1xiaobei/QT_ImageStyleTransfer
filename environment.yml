@@ -16,3 +16,4 @@ dependencies:
   - wandb==0.12.18
   - PyQt5==5.15.10
   - PyQt5Designer
+  - opencv-python
