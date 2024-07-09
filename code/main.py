@@ -76,26 +76,50 @@ class CycleGANApp(QWidget, Ui_Form):
             self.transform.setEnabled(True)
 
     def chooseStyle(self):
-        items = ("梵高风格", "浮世绘风格", "网格风格", "彩笔风格")
+        items = ("星月夜风格","梵高风格", "浮世绘风格", "网格风格", "彩笔风格")
         item, ok = QtWidgets.QInputDialog.getItem(self, "选择风格", "风格列表", items, 0, False)
         if ok and item:
             self.styleChoice = item
 
     def loadModel(self): # 加载模型
         opt = TestOptions().parse() # 解析命令行选项
-        opt.name = self.styleChoice + '_cyclegan'  # 设置实验名称
+        #opt.name = self.styleChoice + '_results'  # 设置实验名称
         opt.model = 'cycle_gan'
+        opt.dataset_mode = 'unaligned'
         opt.no_dropout = True
         opt.phase = 'test'
+        # opt.dataroot = './datasets'
+        opt.testB_dir = self.fileName
         # 指定模型
+        if self.styleChoice == "星月夜风格":
+            opt.name = 'starrynight'  # 设置实验名称
+            opt.testA_dir = './datasets/starrynight/testA/00440.jpg'
+            opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "梵高风格":
-            opt.checkpoints_dir = './checkpoints/aaa.pth'  # 指定模型
+            opt.name = 'vangogh'  # 设置实验名称
+            opt.testA_dir = './datasets/vangogh/testA/00440.jpg'
+            opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "浮世绘风格":
+            opt.name = 'vangogh'  # 设置实验名称
+            opt.testA_dir = 'a'
             opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
         if self.styleChoice == "网格风格":
+            opt.name = 'vangogh'  # 设置实验名称
+            opt.testA_dir = 'a'
             opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
         if self.styleChoice == "彩笔风格":
+            opt.name = 'vangogh'  # 设置实验名称
+            opt.testA_dir = 'a'
             opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
+
+         # 打印设置的参数以验证
+        print("Experiment Name: ", opt.name)
+        print("Model: ", opt.model)
+        print("Checkpoints Directory: ", opt.checkpoints_dir)
+        print("filename: ", self.fileName)
+        print("testB: ", opt.testB_dir)
+        print("testA: ", opt.testA_dir)
+
         self.model = create_model(opt)
         self.model.setup(opt)
         self.model.eval()
@@ -103,15 +127,16 @@ class CycleGANApp(QWidget, Ui_Form):
         
         
     def transformImage(self):
-        if self.model is None:
-            self.loadModel()
+        #if self.model is None:
+        self.loadModel()
 
         input_image = cv2.imread(self.fileName)
         input_image = Image.fromarray(cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB))
         input_image = self.transform_function(input_image).unsqueeze(0)
 
         with torch.no_grad():
-            fake_image = self.model.netG_A(input_image)
+            #fake_image = self.model.netG_A(input_image)
+            fake_image = self.model.netG_B(input_image)
         fake_image = fake_image[0].cpu().float().numpy()
         fake_image = (np.transpose(fake_image, (1, 2, 0)) + 1) / 2.0 * 255.0
         fake_image = np.clip(fake_image, 0, 255).astype(np.uint8)
@@ -133,5 +158,6 @@ class CycleGANApp(QWidget, Ui_Form):
 if __name__ == '__main__':
     app = QApplication([])
     ex = CycleGANApp()
+    ex.loadModel()#################
     ex.show()
     app.exec_()
