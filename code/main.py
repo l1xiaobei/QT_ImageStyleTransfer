@@ -9,34 +9,104 @@ from PIL import Image
 from models import create_model
 from options.test_options import TestOptions
 from data.base_dataset import get_transform
-
+# 与SiliconUI有关的库文件
+#from SiliconUI.SiLayout import SiLayoutV
+from SiliconUI import *
+#from SiliconUI.SiGlobal import *
+#from SiliconUI.SiSticker import SiSticker
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(1017, 710)
+        Form.resize(1000, 640) # 窗口默认长宽
+
+        #设置最小长宽
+        self.setMinimumWidth(1000)
+        self.setMinimumHeight(640)
+
+        # 设置窗口背景颜色
+        #Form.setStyleSheet('background-color:{}'.format(colorset.BG_GRAD_HEX[2]))
+        #Form.setStyleSheet("background-color: #3D4E30;")
+        Form.setStyleSheet("""
+            QWidget {
+                background: qlineargradient(
+                    spread:pad, x1:0, y1:0, x2:1, y2:1,
+                        stop:0 rgba(3,0,30, 1),stop:0.5 rgba(115,3,192, 1),stop:1 rgba(236,56,188, 1)
+                    
+                );
+            }
+        """)# stop:0 rgba(3,0,30, 1),stop:0.33 rgba(115,3,192, 1),stop:0.66 rgba(236,56,188, 1),  stop:1 rgba(253,239,249, 1)
+
+        # 设置logo图标
+        self.logo = QLabel(self)
+        self.logo.setPixmap(QPixmap('./img/logo2.png'))
+        #self.logo.setGeometry(68, 20, 24, 24)
+        self.logo.setGeometry(28,20,26,26)
+        self.logo.setStyleSheet("border-radius: 12px;")  # 设置圆角
+
+        # 设置个标题栏试试
+        self.window_title = QLabel(self)
+        #self.window_title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[1]))
+        self.window_title.setGeometry(64, 0, 500, 64)
+        self.window_title.setText('图像风格迁移软件(ver0.0.5)           created by 自动化2102李昊洋')
+        self.window_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.window_title.setFont(SiliconUI.SiFont.font_L1_bold)
+        self.window_title.setStyleSheet("color: white; background-color : transparent")  # 标题栏背景设置为透明的
+
         self.oldPic = QtWidgets.QLabel(Form)
         self.oldPic.setGeometry(QtCore.QRect(110, 120, 320, 240))
         self.oldPic.setScaledContents(True)
         self.oldPic.setAlignment(QtCore.Qt.AlignCenter)
         self.oldPic.setObjectName("oldPic")
+        self.oldPic.setStyleSheet("background-color: rgba(33,16,127,128);border-radius: 12px;")# 设置颜色，以及变为圆角矩形
+
         self.newPic = QtWidgets.QLabel(Form)
         self.newPic.setGeometry(QtCore.QRect(570, 120, 320, 240))
         self.newPic.setScaledContents(True)
         self.newPic.setAlignment(QtCore.Qt.AlignCenter)
         self.newPic.setObjectName("newPic")
-        self.upload = QtWidgets.QPushButton(Form)
-        self.upload.setGeometry(QtCore.QRect(400, 460, 93, 28))
+        self.newPic.setStyleSheet("background-color: rgba(33,16,127,128);border-radius: 12px;")# 设置颜色，以及变为圆角矩形
+
+        # 创建sibutton控件作为上传按钮
+        #self.upload = QtWidgets.QPushButton(Form)
+        self.upload = SiButton(Form)
+        self.upload.setGeometry(QtCore.QRect(330, 460, 130, 32))
         self.upload.setObjectName("upload")
-        self.transform = QtWidgets.QPushButton(Form)
-        self.transform.setGeometry(QtCore.QRect(540, 460, 93, 28))
+        self.upload.setStyleSheet("""
+            SiButton {
+                background-color: %s;
+                color: %s;
+                border-radius: 10px;
+            }
+            SiButton:hover {
+                background-color: %s;
+            }
+            SiButton:pressed {
+                background-color: %s;
+            }
+            """ % (colorset.BTN_NORM_HEX[0], colorset.BTN_NORM_TEXT_HEX, colorset.BTN_HL_HEX[0], colorset.BTN_HOLD_HEX[0]))
+
+        # 创建sibutton控件作为风格转换按钮
+        self.transform = SiButton(Form)
+        self.transform.setGeometry(QtCore.QRect(540, 460, 130, 32))
         self.transform.setObjectName("transform")
-        self.save = QtWidgets.QPushButton(Form)
-        self.save.setGeometry(QtCore.QRect(540, 530, 93, 28))
+
+        # 创建sibutton控件作为结果保存按钮
+        self.save = SiButton(Form)
+        self.save.setGeometry(QtCore.QRect(540, 530, 130, 32))
         self.save.setObjectName("save")
-        self.style = QtWidgets.QToolButton(Form)
-        self.style.setGeometry(QtCore.QRect(400, 530, 93, 28))
-        self.style.setObjectName("style")
+
+        # 创建sicombobox控件作为风格选择下拉菜单
+        #self.style = QtWidgets.QToolButton(Form)
+        self.style = SiComboBox(Form)
+        self.style.setGeometry(QtCore.QRect(330, 530, 130, 32))
+        #self.style.setObjectName("style")
+        self.style.addOption("星月夜风格", 1)
+        self.style.addOption("梵高风格", 2)
+        self.style.addOption("浮世绘风格", 3)
+        self.style.addOption("网格风格", 4)
+        self.style.addOption("彩笔风格", 5)
+        self.style.setOption("星月夜风格")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -49,7 +119,7 @@ class Ui_Form(object):
         self.upload.setText(_translate("Form", "上传图片"))
         self.transform.setText(_translate("Form", "开始转换"))
         self.save.setText(_translate("Form", "保存结果"))
-        self.style.setText(_translate("Form", "风格选择"))
+        #self.style.setText(_translate("Form", "风格选择"))
 
 
 class CycleGANApp(QWidget, Ui_Form):
@@ -57,7 +127,8 @@ class CycleGANApp(QWidget, Ui_Form):
         super().__init__()
         self.setupUi(self)
         self.upload.clicked.connect(self.uploadImage)
-        self.style.clicked.connect(self.chooseStyle)
+        #self.style.clicked.connect(self.chooseStyle) 由toolbutton改为combobox
+        self.style.textChanged.connect(self.chooseStyle)
         self.transform.clicked.connect(self.transformImage)
         self.save.clicked.connect(self.saveImage)
         self.transform.setEnabled(False)
@@ -65,7 +136,7 @@ class CycleGANApp(QWidget, Ui_Form):
         self.fileName = ''
         self.output_image = None
         self.model = None
-        self.styleChoice = '梵高风格'  # 默认风格
+        self.styleChoice = '星月夜风格'  # 默认风格
 
     def uploadImage(self):
         options = QFileDialog.Options()
@@ -75,11 +146,13 @@ class CycleGANApp(QWidget, Ui_Form):
             self.oldPic.setPixmap(QPixmap(self.fileName))
             self.transform.setEnabled(True)
 
-    def chooseStyle(self):
-        items = ("星月夜风格","梵高风格", "浮世绘风格", "网格风格", "彩笔风格")
-        item, ok = QtWidgets.QInputDialog.getItem(self, "选择风格", "风格列表", items, 0, False)
-        if ok and item:
-            self.styleChoice = item
+    #槽函数定义，以接收textchanged发送的参数text
+    def chooseStyle(self,text):
+        self.styleChoice = text
+        #items = ("星月夜风格","梵高风格", "浮世绘风格", "网格风格", "彩笔风格")
+        #item, ok = QtWidgets.QInputDialog.getItem(self, "选择风格", "风格列表", items, 0, False)
+        #if ok and item:
+            #self.styleChoice = item
 
     def loadModel(self): # 加载模型
         opt = TestOptions().parse() # 解析命令行选项

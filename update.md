@@ -36,3 +36,19 @@
 ## 0.0.4 (2024-8-7)
 
 + 引入silicon ui前的最后一次提交。
+
+## 0.0.5 (2024-8-7)
+
+### 功能
++ 添加了`./code/SiliconUI`文件夹，用于重构按钮为silicon控件
++ 添加了标题栏`self.window_title = QLabel(self)`。
++ 添加了`./code/img`文件夹用于存储软件logo。
+
+### 修改
+
++ 修改`main.py`中的`setup`函数，将qt控件重构为silicon控件，将风格选择按钮由toolbutton更换为combobox。同时修改了风格选择按钮对应的槽函数。
++ 通过样式表`Form.setStyleSheet`修改了窗口背景颜色，以及将矩形变为圆角矩形
+
+### 存在的问题
+
+- *发现转换后的图片有可能会出现镜像翻转，目前对于出现原因以及解决方案尚不知悉。
