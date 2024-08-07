@@ -31,4 +31,8 @@
 + 修改`./code/data/unaligned_dataset.py`逻辑使得可以**分别**加载测试用的AB图片。
 + `./code/options/base_options.py`中添加参数`testA_dir、testB_dir`。
 + `./code/main.py`中添加了处理这两个新增参数的功能。
-+ 修改了`./code/main.py`中的`opt.name`的处理逻辑以及很多地方，初步成功实现图像迁移。
++ 修改了`./code/main.py`中的`opt.name`的处理逻辑以及其他很多地方，初步实现图像迁移。
+
+## 0.0.4 (2024-8-7)
+
++ 引入silicon ui前的最后一次提交。

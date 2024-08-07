@@ -83,13 +83,14 @@ class CycleGANApp(QWidget, Ui_Form):
 
     def loadModel(self): # 加载模型
         opt = TestOptions().parse() # 解析命令行选项
-        #opt.name = self.styleChoice + '_results'  # 设置实验名称
         opt.model = 'cycle_gan'
         opt.dataset_mode = 'unaligned'
-        opt.no_dropout = True
+        opt.testB_dir = self.fileName
         opt.phase = 'test'
         # opt.dataroot = './datasets'
-        opt.testB_dir = self.fileName
+        # #opt.no_dropout = True
+        #opt.name = self.styleChoice + '_results'  # 设置实验名称
+
         # 指定模型
         if self.styleChoice == "星月夜风格":
             opt.name = 'starrynight'  # 设置实验名称
@@ -113,12 +114,12 @@ class CycleGANApp(QWidget, Ui_Form):
             opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
 
          # 打印设置的参数以验证
-        print("Experiment Name: ", opt.name)
-        print("Model: ", opt.model)
-        print("Checkpoints Directory: ", opt.checkpoints_dir)
-        print("filename: ", self.fileName)
-        print("testB: ", opt.testB_dir)
-        print("testA: ", opt.testA_dir)
+        #print("Experiment Name: ", opt.name)
+        #print("Model: ", opt.model)
+        #print("Checkpoints Directory: ", opt.checkpoints_dir)
+        #print("filename: ", self.fileName)
+        #print("testB: ", opt.testB_dir)
+        #print("testA: ", opt.testA_dir)
 
         self.model = create_model(opt)
         self.model.setup(opt)
@@ -158,6 +159,5 @@ class CycleGANApp(QWidget, Ui_Form):
 if __name__ == '__main__':
     app = QApplication([])
     ex = CycleGANApp()
-    ex.loadModel()#################
     ex.show()
     app.exec_()
