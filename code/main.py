@@ -48,7 +48,7 @@ class Ui_Form(object):
         self.window_title = QLabel(self)
         #self.window_title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[1]))
         self.window_title.setGeometry(64, 0, 500, 64)
-        self.window_title.setText('图像风格迁移软件(ver0.0.6)           created by 自动化2102李昊洋')
+        self.window_title.setText('图像风格迁移软件(ver0.0.7)           created by 自动化2102李昊洋')
         self.window_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.window_title.setFont(SiliconUI.SiFont.font_L1_bold)
         self.window_title.setStyleSheet("color: white; background-color : transparent")  # 标题栏背景设置为透明的
@@ -203,17 +203,17 @@ class CycleGANApp(QWidget, Ui_Form):
             opt.testA_dir = './datasets/vangogh/testA/00440.jpg'
             opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "浮世绘风格":
-            opt.name = 'vangogh'  # 设置实验名称
+            opt.name = 'ukiyoe'  # 设置实验名称
             opt.testA_dir = 'a'
-            opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
+            opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "网格风格":
-            opt.name = 'vangogh'  # 设置实验名称
+            opt.name = 'wangge'  # 设置实验名称
             opt.testA_dir = 'a'
-            opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
+            opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "彩笔风格":
-            opt.name = 'vangogh'  # 设置实验名称
-            opt.testA_dir = 'a'
-            opt.checkpoints_dir = './checkpoints/bbb.pth'  # 指定模型
+            opt.name = 'caibi_test'  # 设置实验名称
+            opt.testA_dir = './datasets/caibi/testA/00443.jpg'
+            opt.checkpoints_dir = './checkpoints/'  # 指定模型
 
          # 打印设置的参数以验证
         #print("Experiment Name: ", opt.name)
@@ -233,7 +233,8 @@ class CycleGANApp(QWidget, Ui_Form):
         #if self.model is None:
         self.loadModel()
 
-        input_image = cv2.imread(self.fileName)
+        #input_image = cv2.imread(self.fileName)
+        input_image = cv2.imdecode(np.fromfile(self.fileName, dtype=np.uint8), -1) # 解决读取中文路径崩溃的问题。
         input_image = Image.fromarray(cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB))
         input_image = self.transform_function(input_image).unsqueeze(0)
 
