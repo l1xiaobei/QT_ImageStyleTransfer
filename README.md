@@ -4,7 +4,12 @@
 
 图像风格迁移软件，学校课程大作业。
 
-如遇报错：
+### 使用方式:
+1. 执行`conda env create -f environment.yml`以创建供使本程序运行的虚拟环境。
+2. 执行`conda activate ist`以启动虚拟环境。
+3. 进入`code`文件夹下，执行`python main.py`以启动软件
+
+### 如遇报错：
 ```
 NVIDIA GeForce RTX 3060 Laptop GPU with CUDA capability sm_86 is not compatible with the current PyTorch installation.
 The current PyTorch install supports CUDA capabilities sm_37 sm_50 sm_60 sm_61 sm_70 sm_75 compute_37.

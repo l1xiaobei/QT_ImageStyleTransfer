@@ -17,3 +17,4 @@ dependencies:
   - PyQt5==5.15.10
   - PyQt5Designer
   - opencv-python
+  #- pyinstaller

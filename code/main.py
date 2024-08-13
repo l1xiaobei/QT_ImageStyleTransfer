@@ -19,6 +19,8 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1000, 640) # 窗口默认长宽
+        self.setWindowIcon(QIcon('./img/logo2.png'))
+        #self.setWindowTitle("图像风格迁移软件ver0.0.8")
 
         #设置最小长宽
         self.setMinimumWidth(1000)
@@ -48,7 +50,7 @@ class Ui_Form(object):
         self.window_title = QLabel(self)
         #self.window_title.setStyleSheet('color: {}'.format(colorset.TEXT_GRAD_HEX[1]))
         self.window_title.setGeometry(64, 0, 500, 64)
-        self.window_title.setText('图像风格迁移软件(ver0.0.7)           created by 自动化2102李昊洋')
+        self.window_title.setText('图像风格迁移软件(ver0.0.8)           created by 自动化2102李昊洋')
         self.window_title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.window_title.setFont(SiliconUI.SiFont.font_L1_bold)
         self.window_title.setStyleSheet("color: white; background-color : transparent")  # 标题栏背景设置为透明的
@@ -131,7 +133,7 @@ class Ui_Form(object):
         self.style.addOption("星月夜风格", 1)
         self.style.addOption("梵高风格", 2)
         self.style.addOption("浮世绘风格", 3)
-        self.style.addOption("网格风格", 4)
+        #self.style.addOption("网格风格", 4)
         self.style.addOption("彩笔风格", 5)
         self.style.setOption("星月夜风格")
 
@@ -154,6 +156,7 @@ class CycleGANApp(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowTitle("图像风格迁移软件 ver0.0.8") # 设置窗口名称
         self.upload.clicked.connect(self.uploadImage)
         #self.style.clicked.connect(self.chooseStyle) 由toolbutton改为combobox
         self.clear.clicked.connect(self.clr)
@@ -206,10 +209,11 @@ class CycleGANApp(QWidget, Ui_Form):
             opt.name = 'ukiyoe'  # 设置实验名称
             opt.testA_dir = 'a'
             opt.checkpoints_dir = './checkpoints/'  # 指定模型
-        if self.styleChoice == "网格风格":
-            opt.name = 'wangge'  # 设置实验名称
-            opt.testA_dir = 'a'
-            opt.checkpoints_dir = './checkpoints/'  # 指定模型
+        # 效果不太好，不搞这个了
+        #if self.styleChoice == "网格风格":
+            #opt.name = 'wangge'  # 设置实验名称
+            #opt.testA_dir = 'a'
+            #opt.checkpoints_dir = './checkpoints/'  # 指定模型
         if self.styleChoice == "彩笔风格":
             opt.name = 'caibi_test'  # 设置实验名称
             opt.testA_dir = './datasets/caibi/testA/00443.jpg'
